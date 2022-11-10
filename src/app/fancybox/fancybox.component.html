@@ -1,0 +1,57 @@
+<div class="fb" *ngIf="galleryImages?.length > 0" >
+    <ng-container  *ngFor="let img of galleryImages; let i = index" >
+        <div class='fb__item img-fadeIn' [style.height.px]="imgHeight" [style.width.px]="imgWidth" *ngIf="imgKey; else directImg" (click)="openImageOverlay(i+1)">
+            <img [src]="img[imgKey]"  [style.height.px]="imgHeight" [style.width.px]="imgWidth" alt="" />
+        </div>
+        <ng-template #directImg>
+            <div class='fb__item img-fadeIn' [style.height.px]="imgHeight" [style.width.px]="imgWidth" (click)="openImageOverlay(i+1)">
+                <img [src]="img"  [style.height.px]="imgHeight" [style.width.px]="imgWidth" alt="" />
+            </div>
+        </ng-template>
+    </ng-container>
+</div>
+
+<!-- 
+    Overlay 
+ -->
+<ng-container *ngIf="isOpenImageOverlay && currentImgIndx" >
+ <div class="fb-overlay">
+    <div class='fb-overlay__header'>
+        <span class='fb-overlay__header--item __text'>
+            <span> {{currentImgIndx}} / {{ galleryImages?.length }}</span>    
+        </span>
+        <span class='fb-overlay__header--item __icon' >
+            <span (click)="playImages()"> 
+                <i class="bi  {{isPlaying ? 'bi-pause-fill' : 'bi-play-fill'}}"></i> 
+            </span>
+        </span>
+        <span class='fb-overlay__header--item __icon' >
+            <span (click)= "closeImageOverlay()"> 
+                <i class="bi bi-x-lg"></i>
+            </span>
+        </span>
+    </div>
+    <div  class='fb-overlay__content'>
+        <div class='fb-overlay__content--icon'>
+
+            <span *ngIf="currentImgIndx > 1" (click)="prevImage(currentImgIndx)"> 
+                <i class="bi bi-caret-left-fill"></i>
+            </span> 
+            
+        </div>
+        <div class='fb-overlay__content--img'>
+            <ng-container *ngIf="currentImgIndx >= 0 && imgKey; else dImg">
+                <img class="{animateImg ? 'img-fadeIn': ''}" [src]="galleryImages[currentImgIndx-1][imgKey]" />
+            </ng-container>
+            <ng-template #dImg>
+                <img class="{animateImg ? 'img-fadeIn': ''}" [src]="galleryImages[currentImgIndx-1]" />
+            </ng-template>
+        </div>
+        <div class='fb-overlay__content--icon'>
+            <span *ngIf="galleryImages.length > currentImgIndx" (click)="nextImage(currentImgIndx)"> 
+                <i class="bi bi-caret-right-fill"></i>
+            </span>
+        </div>
+    </div>
+</div>
+</ng-container>
